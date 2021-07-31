@@ -55,14 +55,13 @@ export default class FeedMonitor
             if (articles.length === 0)
                 return false
 
-            const article = articles[0], link = article.link
-
-            if (!link || feed.isLinkInHistory(link))
-                return false
-
-            feed.pushHistory(link)
-
-            await this.articlePoster.postArticle(guild, feed.channelId, article, feed.roleId)
+            //const article = articles[0], link = article.link
+            for (let i = 0; i <articles.length;++i ){
+                if (!articles[0].link || feed.isLinkInHistory(articles[0].link))
+                    continue;
+                feed.pushHistory(articles[0].link)
+                await this.articlePoster.postArticle(guild, feed.channelId, articles[0], feed.roleId)
+            }
             return true
         }
         catch (e)
