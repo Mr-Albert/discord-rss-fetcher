@@ -57,6 +57,10 @@ export default class FeedMonitor
 
             //const article = articles[0], link = article.link
             for (let i = 0; i <articles.length;++i ){
+                await Logger.logEvent("testingEVents");
+                await Logger.logEvent(articles.length);
+                await Logger.logEvent("testingEVentsEnd");
+
                 if (!articles[0].link || feed.isLinkInHistory(articles[0].link))
                     continue;
                 feed.pushHistory(articles[0].link)
