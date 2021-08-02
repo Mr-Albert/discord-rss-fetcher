@@ -1,7 +1,7 @@
 {
   "author": "Benjamin Higgins <mail@brhiggins.com>",
   "bugs": {
-    "url": "https://github.com/bhigginsuk/discord-rss-feed/issues"
+    "url": "https://github.com/Mr-Albert/discord-rss-feed/issues"
   },
   "dependencies": {
     "@types/html-to-text": "^1.4.31",
@@ -22,13 +22,13 @@
   "devDependencies": {
     "tslint": "^5.16.0"
   },
-  "homepage": "https://github.com/bhigginsuk/discord-rss-feed#readme",
+  "homepage": "https://github.com/Mr-Albert/discord-rss-feed#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "name": "discord-rss-feed",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bhigginsuk/discord-rss-feed.git"
+    "url": "git+https://github.com/Mr-Albert/discord-rss-feed.git"
   },
   "scripts": {
     "build": "./node_modules/.bin/tsc --project tsconfig.prod.json",
