@@ -1,1 +1,1 @@
-FROM Mr-Albert/discord-rss-fetcher:latest
+FROM mr-albert/discord-rss-fetcher:latest
