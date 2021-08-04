@@ -6,6 +6,9 @@ import ArticlePoster from "./article-poster"
 
 export default class FeedMonitor
 {
+    timeout(ms: number) { //pass a time in milliseconds to this function
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
     public async beginMonitoring()
     {
         // See https://discord.js.org/#/docs/main/stable/typedef/Status
@@ -22,6 +25,7 @@ export default class FeedMonitor
                 }
 
                 await guild.loadDocument()
+                await this.timeout(180000);
                 const didPostNewArticle = await this.fetchAndProcessAllGuildFeeds(guild)
 
                 if (didPostNewArticle)
@@ -56,15 +60,11 @@ export default class FeedMonitor
                 return false
 
             //const article = articles[0], link = article.link
-            for (let i = 0; i <articles.length;++i ){
-                await Logger.logEvent("testingEVents");
-                await Logger.logEvent(""+articles.length);
-                await Logger.logEvent("testingEVentsEnd");
-
-                if (!articles[0].link || feed.isLinkInHistory(articles[0].link))
+            for (let i = articles.length-1; i >=0;--i ){
+                if (!articles[i].link || feed.isLinkInHistory(articles[i].link))
                     continue;
-                feed.pushHistory(articles[0].link)
-                await this.articlePoster.postArticle(guild, feed.channelId, articles[0], feed.roleId)
+                feed.pushHistory(articles[i].link)
+                await this.articlePoster.postArticle(guild, feed.channelId, articles[i], feed.roleId)
             }
             return true
         }
