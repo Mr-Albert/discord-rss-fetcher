@@ -25,16 +25,19 @@ export default class FeedMonitor
                 }
 
                 await guild.loadDocument()
-                await this.timeout(180000);
                 const didPostNewArticle = await this.fetchAndProcessAllGuildFeeds(guild)
+                await this.timeout(180000);
 
                 if (didPostNewArticle)
                     await guild.save()
             }
 
         // Reaching this code means the above while loop exited, which means the bot disconnected
-        await Logger.debugLogError(`Feed monitor disconnected from Discord!`)
-        await Logger.logEvent("FeedMonitorDisconnect")
+        // await Logger.debugLogError(`Feed monitor disconnected from Discord!`)
+        // await Logger.logEvent("FeedMonitorDisconnect")
+        console.log(">>>Error<<<Feed monitor disconnected from Discord!");
+        console.log("--Event--FeedMonitorDisconnect");
+
         process.exit(1)
     }
 
@@ -70,7 +73,9 @@ export default class FeedMonitor
         }
         catch (e)
         {
-            Logger.debugLogError(`Error fetching feed ${feed.url} in guild ${guild.name}`, e)
+            // Logger.debugLogError(`Error fetching feed ${feed.url} in guild ${guild.name}`, e)
+            console.log(`>>>ERROR<<Error fetching feed ${feed.url} in guild ${guild.name}`+ e);
+
             return false
         }
     }
@@ -94,7 +99,9 @@ if (!module.parent)
         .then(() => feedMonitor.beginMonitoring())
         .catch(async err =>
         {
-            await (Logger.debugLogError("Error initialising feed monitor", err) as Promise<void>)
+            // await (Logger.debugLogError("Error initialising feed monitor", err) as Promise<void>)
+            console.log(">>>ERROR<<Error initialising feed monitor"+ err);
+
             process.exit(1)
         })
 }

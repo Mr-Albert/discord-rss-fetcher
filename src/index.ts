@@ -18,7 +18,8 @@ if (Cluster.isMaster)
         .then(() => startFeedMonitor(client, !config.computedValues!.isLocalDb))
         .catch(async err =>
         {
-            await Logger.consoleLogError("Error during initialisation", err)
+            // await Logger.consoleLogError("Error during initialisation", err)
+            console.log(">>>Error<<<<Error during initialisation"+err);
             process.exit(1)
         })
 }
