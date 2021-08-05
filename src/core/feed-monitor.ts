@@ -34,7 +34,7 @@ export default class FeedMonitor
 
         // Reaching this code means the above while loop exited, which means the bot disconnected
         // await Logger.debugLogError(`Feed monitor disconnected from Discord!`)
-        // await Logger.logEvent("FeedMonitorDisconnect")
+         await Logger.logEvent("FeedMonitorDisconnect")
         console.log(">>>Error<<<Feed monitor disconnected from Discord!");
         console.log("--Event--FeedMonitorDisconnect");
 
