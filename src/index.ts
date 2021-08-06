@@ -19,7 +19,7 @@ if (Cluster.isMaster)
         .catch(async err =>
         {
             await Logger.consoleLogError("Error during initialisation", err)
-            console.log(">>>Error<<<<Error during initialisation"+err);
+            console.log(`[MONITOR] [${new Date().toUTCString()}]`+">>>Error<<<<Error during initialisation"+err);
             process.exit(1)
         })
 }

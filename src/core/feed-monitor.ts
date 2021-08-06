@@ -9,6 +9,10 @@ export default class FeedMonitor
     timeout(ms: number) { //pass a time in milliseconds to this function
         return new Promise(resolve => setTimeout(resolve, ms));
       }
+    logStatement(statement:String)
+      {
+          console.log(`[MONITOR] [${new Date().toUTCString()}] ${statement}`)
+      }
     public async beginMonitoring()
     {
         // See https://discord.js.org/#/docs/main/stable/typedef/Status
@@ -16,7 +20,6 @@ export default class FeedMonitor
             for (const djsGuild of this.client.djs.guilds.values())
             {
                 const guild = new Guild(djsGuild)
-
                 // Allow the event queue to clear before processing the next guild if no perms in this one
                 if (!guild.hasPermissions(this.client.config.requiredPermissions))
                 {
@@ -25,6 +28,7 @@ export default class FeedMonitor
                 }
 
                 await guild.loadDocument()
+                this.logStatement("pre-fetchAndProcessAllGuildFeeds guild="+guild)
                 const didPostNewArticle = await this.fetchAndProcessAllGuildFeeds(guild)
                 await this.timeout(180000);
 
@@ -34,9 +38,9 @@ export default class FeedMonitor
 
         // Reaching this code means the above while loop exited, which means the bot disconnected
         // await Logger.debugLogError(`Feed monitor disconnected from Discord!`)
-         await Logger.logEvent("FeedMonitorDisconnect")
-        console.log(">>>Error<<<Feed monitor disconnected from Discord!");
-        console.log("--Event--FeedMonitorDisconnect");
+        await Logger.logEvent("FeedMonitorDisconnect")
+        console.log(`[MONITOR] [${new Date().toUTCString()}]`+">>>Error<<<Feed monitor disconnected from Discord!");
+        console.log(`[MONITOR] [${new Date().toUTCString()}]`+"--Event--FeedMonitorDisconnect");
 
         process.exit(1)
     }
@@ -54,16 +58,19 @@ export default class FeedMonitor
     {
         try
         {
+            this.logStatement("inside fetchAndProcessFeed(feed.url)= "+feed.url)
             if (!guild.channels.has(feed.channelId))
                 return false
 
             const articles = await this.rssFetcher.fetchArticles(feed.url)
+            this.logStatement("inside articles.length= "+articles.length)
 
             if (articles.length === 0)
                 return false
 
             //const article = articles[0], link = article.link
             for (let i = articles.length-1; i >=0;--i ){
+                this.logStatement("inside articles[i].link = "+articles[i].link +", feed.isLinkInHistory(articles[i].link)= "+feed.isLinkInHistory(articles[i].link))
                 if (!articles[i].link || feed.isLinkInHistory(articles[i].link))
                     continue;
                 feed.pushHistory(articles[i].link)
@@ -73,8 +80,7 @@ export default class FeedMonitor
         }
         catch (e)
         {
-            // Logger.debugLogError(`Error fetching feed ${feed.url} in guild ${guild.name}`, e)
-            console.log(`>>>ERROR<<Error fetching feed ${feed.url} in guild ${guild.name}`+ e);
+            this.logStatement(`>>>ERROR<<Error fetching feed ${feed.url} in guild ${guild.name}`+ e);
 
             return false
         }
@@ -99,8 +105,7 @@ if (!module.parent)
         .then(() => feedMonitor.beginMonitoring())
         .catch(async err =>
         {
-            // await (Logger.debugLogError("Error initialising feed monitor", err) as Promise<void>)
-            console.log(">>>ERROR<<Error initialising feed monitor"+ err);
+            console.log(`[MONITOR] [${new Date().toUTCString()}]`+">>>ERROR<<Error initialising feed monitor"+ err);
 
             process.exit(1)
         })

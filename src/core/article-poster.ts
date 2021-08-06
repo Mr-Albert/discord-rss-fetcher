@@ -23,7 +23,7 @@ export default class ArticlePoster
         catch (e)
         {
              Logger.debugLogError(`Error posting article in channel ${channel.name} in guild ${channel.guild.name}`, e)
-            console.log(">>>Error<<<<Error during initialisation"+`Error posting article in channel ${channel.name} in guild ${channel.guild.name}`, e);
+             console.log(`[MONITOR] [${new Date().toUTCString()}]`+">>>Error<<<<Error during initialisation"+`Error posting article in channel ${channel.name} in guild ${channel.guild.name}`, e);
 
         }
     }
