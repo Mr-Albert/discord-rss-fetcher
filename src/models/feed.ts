@@ -6,7 +6,7 @@ import Guild from "./guild"
 export default class Feed extends SubDocument implements NotifyPropertyChanged
 {
     private maxHistoryCount = 10000
-    private history: string[] = []
+    public history: string[] = []
 
     public id: string
     public url: string

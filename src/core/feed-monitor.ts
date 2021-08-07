@@ -28,7 +28,6 @@ export default class FeedMonitor
                 }
 
                 await guild.loadDocument()
-                this.logStatement("pre-fetchAndProcessAllGuildFeeds guild="+guild)
                 const didPostNewArticle = await this.fetchAndProcessAllGuildFeeds(guild)
                 await this.timeout(180000);
 
@@ -58,19 +57,15 @@ export default class FeedMonitor
     {
         try
         {
-            this.logStatement("inside fetchAndProcessFeed(feed.url)= "+feed.url)
             if (!guild.channels.has(feed.channelId))
                 return false
 
             const articles = await this.rssFetcher.fetchArticles(feed.url)
-            this.logStatement("inside articles.length= "+articles.length)
-
             if (articles.length === 0)
                 return false
 
             //const article = articles[0], link = article.link
             for (let i = articles.length-1; i >=0;--i ){
-                this.logStatement("inside articles[i].link = "+articles[i].link +", feed.isLinkInHistory(articles[i].link)= "+feed.isLinkInHistory(articles[i].link))
                 if (!articles[i].link || feed.isLinkInHistory(articles[i].link))
                     continue;
                 feed.pushHistory(articles[i].link)
