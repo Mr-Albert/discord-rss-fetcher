@@ -3,9 +3,22 @@ import Feed from "../models/feed"
 import Guild from "../models/guild"
 import RssFetcher, { getRssFetcher } from "../service/rss-reader/abstract/rss-fetcher"
 import ArticlePoster from "./article-poster"
+import Normalise from "../core/normaliser"
 
 export default class FeedMonitor
 {
+    private maxHistoryCount = 10000
+    private globalHistory: string[] = []
+    public isLinkInGlobalHistory(link: string): boolean
+    {
+        return this.globalHistory.indexOf(Normalise.forCache(link)) > -1
+    }
+    private pushGlobalHistory(...links: string[]){
+        const newLinks = links.map(x => Normalise.forCache(x)).filter(x => !this.isLinkInGlobalHistory(x))
+        Array.prototype.push.apply(this.globalHistory, newLinks)
+        this.globalHistory.splice(0, this.globalHistory.length - this.maxHistoryCount)
+    }
+
     timeout(ms: number) { //pass a time in milliseconds to this function
         return new Promise(resolve => setTimeout(resolve, ms));
       }
@@ -68,7 +81,10 @@ export default class FeedMonitor
             for (let i = articles.length-1; i >=0;--i ){
                 if (!articles[i].link || feed.isLinkInHistory(articles[i].link))
                     continue;
+                if(feed.exclusiveFeed && this.isLinkInGlobalHistory(articles[i].link))
+                    continue;
                 feed.pushHistory(articles[i].link)
+                this.pushGlobalHistory(articles[i].link)
                 await this.articlePoster.postArticle(guild, feed.channelId, articles[i], feed.roleId)
             }
             return true
