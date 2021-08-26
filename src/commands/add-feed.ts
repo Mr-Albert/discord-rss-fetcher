@@ -10,7 +10,8 @@ async function invoke(params: string[], message: Message, client: Client)
     // Validate and retrieve channel ID
     if (message.mentions.channels.size === 0)
         throw new CommandRejection("Invalid channel")
-    const channelId = message.mentions.channels.first().id
+        const channelId = message.mentions.channels.first().id
+        const channelName = message.mentions.channels.first().name
 
     // Validate and retrieve feed URL
     const url = params[0]
@@ -28,7 +29,7 @@ async function invoke(params: string[], message: Message, client: Client)
         throw new CommandRejection("Feed already exists")
 
     // Add new feed
-    const newFeed = Feed.create(ShortId.generate(), url, channelId, roleId)
+    const newFeed = Feed.create(ShortId.generate(), url, channelId,channelName, roleId)
 
     let prompt = `Are you happy with this? (y/n)\n\`\`\`JSON\n${JSON.stringify(newFeed.toFriendlyObject(message.guild), null, "\t")}\`\`\``
     let userResponse: DisharmonyMessage, commandResponse = ""

@@ -10,6 +10,7 @@ export default class Feed extends SubDocument implements NotifyPropertyChanged
     public history: string[] = []
 
     public id: string
+    public channelName: string
     public url: string
     public channelId: string
     public roleId: string
@@ -33,6 +34,7 @@ export default class Feed extends SubDocument implements NotifyPropertyChanged
             id: this.id,
             url: this.url,
             channelId: this.channelId,
+            channelName:this.channelName,
             roleId: this.roleId,
             history: this.history,
         }
@@ -43,6 +45,7 @@ export default class Feed extends SubDocument implements NotifyPropertyChanged
         this.id = record.id
         this.url = record.url
         this.channelId = record.channelId
+        this.channelName = record.channelName
         this.roleId = record.roleId
         this.history = record.history
     }
@@ -61,10 +64,11 @@ export default class Feed extends SubDocument implements NotifyPropertyChanged
         }
     }
 
-    public static create(id: string, url: string, channelId: string, roleId?: string): Feed
+    public static create(id: string, url: string, channelId: string, channelName:string, roleId?: string): Feed
     {
         const feed = new Feed()
         feed.id = id
+        feed.channelName = channelName
         feed.url = url
         feed.channelId = channelId
 

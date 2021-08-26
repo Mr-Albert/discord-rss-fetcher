@@ -7,7 +7,7 @@ import Normalise from "../core/normaliser"
 
 export default class FeedMonitor
 {
-    private maxHistoryCount = 10000
+    private maxHistoryCount = 100000
     private globalHistory: string[] = []
     public isLinkInGlobalHistory(link: string): boolean
     {
@@ -80,11 +80,20 @@ export default class FeedMonitor
             //const article = articles[0], link = article.link
             for (let i = articles.length-1; i >=0;--i ){
                 if (!articles[i].link || feed.isLinkInHistory(articles[i].link))
-                    continue;
-                if(feed.exclusiveFeed && this.isLinkInGlobalHistory(articles[i].link))
-                    continue;
+                    {
+                        // this.logStatement(`>>>EXCLUDED<<from local ${feed.url} link: ${(articles[i].link)}`);
+                        continue;
+                    }
+                if(!feed.exclusiveFeed && this.isLinkInGlobalHistory(articles[i].link))
+                    {
+                        // this.logStatement(`>>>EXCLUDED<<from global ${feed.url} link: ${(articles[i].link)}`);
+                        continue;
+                    }
                 feed.pushHistory(articles[i].link)
-                this.pushGlobalHistory(articles[i].link)
+                if(feed.channelName!="all-work") //fix this magic value
+                    this.pushGlobalHistory(articles[i].link)
+                // this.logStatement(`>>>INCLUDED<< ${feed.url} link: ${(articles[i].link)} channel ${feed.channelName}`);
+
                 await this.articlePoster.postArticle(guild, feed.channelId, articles[i], feed.roleId)
             }
             return true
